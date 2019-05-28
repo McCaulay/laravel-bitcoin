@@ -1,17 +1,17 @@
 <?php
-namespace Mccaulay\Bitcoin\Facades;
+namespace McCaulay\Bitcoin\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
-class BlockApi extends Facade
+class ControlApi extends Facade
 {
     /**
      * Get the registered name of the component.
      *
      * @return string
      */
-    protected static function getFacadeAccessor()
+    protected static function getFacadeAccessor(): string
     {
-        return 'block-api';
+        return 'control-api';
     }
 }

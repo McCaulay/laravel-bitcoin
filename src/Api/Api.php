@@ -1,5 +1,5 @@
 <?php
-namespace Mccaulay\Bitcoin\Api;
+namespace McCaulay\Bitcoin\Api;
 
 use GuzzleHttp\Client;
 
@@ -39,7 +39,7 @@ class Api
      *
      * @return string
      */
-    private function getBaseUri()
+    private function getBaseUri(): string
     {
         $baseUri = $this->config['secure'] ? 'https://' : 'http://';
         $baseUri .= $this->config['username'] . ':' . $this->config['password'];
@@ -55,7 +55,7 @@ class Api
      * @param array $params
      * @return mixed
      */
-    protected function request(string $method, array $params)
+    protected function request(string $method, array $params = [])
     {
         $response = $this->client->post('/', [
             'json' => [
@@ -64,6 +64,6 @@ class Api
             ],
         ]);
         $contents = (string) $response->getBody();
-        return json_decode($contents);
+        return json_decode($contents)->result;
     }
 }

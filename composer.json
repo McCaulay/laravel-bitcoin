@@ -1,11 +1,13 @@
 {
     "name": "mccaulay/laravel-bitcoin",
-    "description": "",
+    "description": "Communicate with the Bitcoin RPC with ease",
     "keywords": [
         "mccaulay",
-        "laravel-bitcoin"
+        "laravel-bitcoin",
+        "laravel",
+        "bitcoin"
     ],
-    "homepage": "https://github.com/mccaulay/laravel-bitcoin",
+    "homepage": "https://github.com/McCaulay/laravel-bitcoin",
     "license": "MIT",
     "type": "library",
     "authors": [
@@ -16,7 +18,8 @@
     ],
     "require": {
         "php": "^7.1",
-        "illuminate/support": "5.8.*"
+        "illuminate/support": "5.8.*",
+        "guzzlehttp/guzzle": "~6.0"
     },
     "require-dev": {
         "orchestra/testbench": "3.8.*",
@@ -24,12 +27,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Mccaulay\\Bitcoin\\": "src"
+            "McCaulay\\Bitcoin\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Mccaulay\\Bitcoin\\Tests\\": "tests"
+            "McCaulay\\Bitcoin\\Tests\\": "tests"
         }
     },
     "scripts": {
@@ -42,10 +45,11 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Mccaulay\\Bitcoin\\Providers\\BitcoinServiceProvider"
+                "McCaulay\\Bitcoin\\Providers\\BitcoinServiceProvider",
+                "McCaulay\\Bitcoin\\Providers\\BlockApiServiceProvider"
             ],
             "aliases": {
-                "Bitcoin": "Mccaulay\\Bitcoin\\Facades\\Bitcoin"
+                "Bitcoin": "McCaulay\\Bitcoin\\Facades\\Bitcoin"
             }
         }
     }

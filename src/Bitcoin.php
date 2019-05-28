@@ -1,5 +1,5 @@
 <?php
-namespace Mccaulay\Bitcoin;
+namespace McCaulay\Bitcoin;
 
 class Bitcoin
 {

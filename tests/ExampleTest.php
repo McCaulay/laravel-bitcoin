@@ -1,6 +1,5 @@
 <?php
-
-namespace Mccaulay\Bitcoin\Tests;
+namespace McCaulay\Bitcoin\Tests;
 
 use PHPUnit\Framework\TestCase;
 

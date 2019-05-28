@@ -3,7 +3,7 @@ namespace McCaulay\Bitcoin\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
-class Bitcoin extends Facade
+class NetworkApi extends Facade
 {
     /**
      * Get the registered name of the component.
@@ -12,6 +12,6 @@ class Bitcoin extends Facade
      */
     protected static function getFacadeAccessor(): string
     {
-        return 'bitcoin';
+        return 'network-api';
     }
 }
