@@ -15,11 +15,35 @@ class WalletApi extends Api
     // getlabeladdress "label"
     // getaddressesbyaccount "account"
     // getbalance ( "account" minconf include_watchonly )
+
+    /**
+     * Gets the balance in decimal bitcoins across all accounts or for a particular account.
+     *
+     * @param  string  $accountName
+     * @return double
+     */
+    public function getBalance(string $accountName = "")
+    {
+        return $this->request('getBalance', empty($accountName) ? [] : [$accountName]);
+    }
+
     // getnewaddress ( "label" )
     // getrawchangeaddress
     // getreceivedbylabel "label" ( minconf )
     // getreceivedbyaddress "address" ( minconf )
     // gettransaction "txid" ( include_watchonly )
+
+    /**
+     * Gets detailed information about the wallet transaction.
+     *
+     * @param  string  $transactionId
+     * @return mixed
+     */
+    public function getTransaction(string $transactionId)
+    {
+        return $this->request('getTransaction', [$transactionId]);
+    }
+
     // getunconfirmedbalance
     // getwalletinfo
     // importaddress "address" ( "label" rescan p2sh )
