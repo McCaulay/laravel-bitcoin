@@ -6,6 +6,7 @@ class GenerateApi extends Api
     /**
      * Nearly instantly generates blocks.
      *
+     * @see https://bitcoin.org/en/developer-reference#generate
      * @param $blocks The number of blocks to generate. The RPC call will not
      * return until all blocks have been generated or the maxium number of
      * iterations has been reached.
@@ -21,6 +22,7 @@ class GenerateApi extends Api
     /**
      * Mines blocks immediately to a specified address.
      *
+     * @see https://bitcoin.org/en/developer-reference#generatetoaddress
      * @param $blocks The number of blocks to generate. The RPC call will not
      * return until all blocks have been generated or the maxium number of
      * iterations has been reached

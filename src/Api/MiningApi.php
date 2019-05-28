@@ -6,6 +6,7 @@ class MiningApi extends Api
     /**
      * Gets a block template or proposal for use with mining software.
      *
+     * @see https://bitcoin.org/en/developer-reference#getblocktemplate
      * @param $data
      * @return object|array
      */
@@ -18,6 +19,7 @@ class MiningApi extends Api
      * Gets various mining-related information such as the number of blocks
      * and the difficulty.
      *
+     * @see https://bitcoin.org/en/developer-reference#getmininginfo
      * @return object|array
      */
     public function getMiningInfo()
@@ -29,6 +31,7 @@ class MiningApi extends Api
      * Gets the estimated current or historical network hashes per second based
      * on the last n blocks.
      *
+     * @see https://bitcoin.org/en/developer-reference#getnetworkhashps
      * @param $blocks The number of blocks to average together for calculating
      * the estimated hashes per second. Default is 120. Use -1 to average all
      * blocks produced since the last difficulty change.
@@ -48,6 +51,7 @@ class MiningApi extends Api
      * into blocks mined by this node (or miners which use this node) with a
      * lower priority or fee.
      *
+     * @see https://bitcoin.org/en/developer-reference#prioritisetransaction
      * @param $transactionId The transaction id of the transaction whose virtual
      * priority or fee you want to modify, encoded as hex in RPC byte order.
      * @param $priority If positive, the priority to add to the transaction in
@@ -73,6 +77,7 @@ class MiningApi extends Api
      * broadcasts it to the network. Extra parameters are ignored by Bitcoin Core
      * but may be used by mining pools or other programs.
      *
+     * @see https://bitcoin.org/en/developer-reference#submitblock
      * @param $block The full block to submit in serialized block format as hex.
      * @param $parameters A JSON object containing extra parameters. Not used
      * directly by Bitcoin Core and also not broadcast to the network. This is

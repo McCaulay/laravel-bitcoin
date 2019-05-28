@@ -14,12 +14,12 @@ class WalletApi extends Api
     // getaccount "address"
     // getlabeladdress "label"
     // getaddressesbyaccount "account"
-    // getbalance ( "account" minconf include_watchonly )
 
     /**
      * Gets the balance in decimal bitcoins across all accounts or for a
      * particular account.
      *
+     * @see https://bitcoin.org/en/developer-reference#getbalance
      * @param  string  $accountName
      * @return double
      */
@@ -32,11 +32,11 @@ class WalletApi extends Api
     // getrawchangeaddress
     // getreceivedbylabel "label" ( minconf )
     // getreceivedbyaddress "address" ( minconf )
-    // gettransaction "txid" ( include_watchonly )
 
     /**
      * Gets detailed information about the wallet transaction.
      *
+     * @see https://bitcoin.org/en/developer-reference#gettransaction
      * @param  string  $transactionId
      * @return object|array
      */
