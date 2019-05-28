@@ -45,8 +45,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "McCaulay\\Bitcoin\\Providers\\BitcoinServiceProvider",
-                "McCaulay\\Bitcoin\\Providers\\BlockApiServiceProvider"
+                "McCaulay\\Bitcoin\\Providers\\BitcoinServiceProvider"
             ],
             "aliases": {
                 "Bitcoin": "McCaulay\\Bitcoin\\Facades\\Bitcoin"
