@@ -16,11 +16,12 @@ class BlockchainApi extends Api
     /**
      * Gets a block with a particular header hash from the local block database.
      *
-     * @param $hash The hash of the header of the block to get, encoded as hex in RPC byte order.
+     * @param $hash The hash of the header of the block to get, encoded as hex
+     * in RPC byte order.
      * @param $verbosity Set to 0 to get the block in serialized block format;
-     *                   Set to 1 (the default) to get the decoded block as a JSON object;
-     *                   Set to 2 to get the decoded block as a JSON object with verbose
-     *                   transaction decoding.
+     * Set to 1 (the default) to get the decoded block as a JSON object;
+     * Set to 2 to get the decoded block as a JSON object with verbose
+     * transaction decoding.
      * @return string
      */
     public function getBlock(string $hash, int $verbosity = 1): string
@@ -31,9 +32,9 @@ class BlockchainApi extends Api
     /**
      * Get the current state of the block chain.
      *
-     * @return object
+     * @return object|array
      */
-    public function getBlockChainInfo(): object
+    public function getBlockChainInfo()
     {
         return $this->request('getBlockChainInfo');
     }

@@ -7,7 +7,6 @@ class Convert
      * Converts from satoshi to bitcoin.
      *
      * @param int $satoshi
-     *
      * @return string
      */
     public static function satoshiToBitcoin(int $satoshi): string
@@ -19,7 +18,6 @@ class Convert
      * Converts from bitcoin to satoshi.
      *
      * @param float $bitcoin
-     *
      * @return string
      */
     public static function bitcoinToSatoshi(float $bitcoin): string
@@ -32,7 +30,6 @@ class Convert
      *
      * @param float $number
      * @param int   $precision
-     *
      * @return string
      */
     private static function toFixed(float $number, int $precision = 8): string

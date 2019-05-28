@@ -17,7 +17,8 @@ class WalletApi extends Api
     // getbalance ( "account" minconf include_watchonly )
 
     /**
-     * Gets the balance in decimal bitcoins across all accounts or for a particular account.
+     * Gets the balance in decimal bitcoins across all accounts or for a
+     * particular account.
      *
      * @param  string  $accountName
      * @return double
@@ -37,7 +38,7 @@ class WalletApi extends Api
      * Gets detailed information about the wallet transaction.
      *
      * @param  string  $transactionId
-     * @return mixed
+     * @return object|array
      */
     public function getTransaction(string $transactionId)
     {

@@ -6,9 +6,9 @@ class ControlApi extends Api
     /**
      * Gets information about memory usage.
      *
-     * @return object
+     * @return object|array
      */
-    public function getMemoryInfo(): object
+    public function getMemoryInfo()
     {
         return $this->request('getmemoryinfo');
     }
