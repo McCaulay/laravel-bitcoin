@@ -20,10 +20,19 @@ class Api
     private $config;
 
     /**
+     * If the response format should be in array or object form.
+     *
+     * @var boolean
+     */
+    private $responseArray;
+
+    /**
      * Initialise the Api
      */
     public function __construct()
     {
+        $this->responseArray = true;
+
         // Initalise the config
         $this->config = config('bitcoin');
 
@@ -64,6 +73,7 @@ class Api
             ],
         ]);
         $contents = (string) $response->getBody();
-        return json_decode($contents)->result;
+        $contents = json_decode($contents, $this->responseArray);
+        return $this->responseArray ? $contents['result'] : $contents->result;
     }
 }
