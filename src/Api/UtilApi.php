@@ -45,9 +45,9 @@ class UtilApi extends Api
      * @param $message The message to sign.
      * @return string
      */
-    public function SignMessageWithPrivKey(string $privateKey, string $message): string
+    public function signMessageWithPrivKey(string $privateKey, string $message): string
     {
-        return $this->request('SignMessageWithPrivKey', [$privateKey, $message]);
+        return $this->request('signMessageWithPrivKey', [$privateKey, $message]);
     }
 
     /**
@@ -58,9 +58,9 @@ class UtilApi extends Api
      * base58check format.
      * @return object|array
      */
-    public function ValidateAddress(string $address)
+    public function validateAddress(string $address)
     {
-        return $this->request('ValidateAddress', [$address]);
+        return $this->request('validateAddress', [$address]);
     }
 
     /**
@@ -74,8 +74,8 @@ class UtilApi extends Api
      * @param $message The message exactly as it was signed (e.g. no extra whitespace).
      * @return bool
      */
-    public function VerifyMessage(string $address, string $signature, string $message): bool
+    public function verifyMessage(string $address, string $signature, string $message): bool
     {
-        return $this->request('VerifyMessage', [$address, $signature, $message]);
+        return $this->request('verifyMessage', [$address, $signature, $message]);
     }
 }
