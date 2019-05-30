@@ -27,11 +27,19 @@ class Api
     private $responseArray;
 
     /**
+     * The api path.
+     *
+     * @var string
+     */
+    private $path;
+
+    /**
      * Initialise the Api
      */
     public function __construct()
     {
         $this->responseArray = true;
+        $this->path = '/';
 
         // Initalise the config
         $this->config = config('bitcoin');
@@ -58,6 +66,17 @@ class Api
     }
 
     /**
+     * Set the path of the api.
+     *
+     * @return self
+     */
+    private function setPath(string $path): self
+    {
+        $this->path = $path;
+        return $this;
+    }
+
+    /**
      * Perform a request to the rpc service.
      *
      * @param string $method
@@ -66,7 +85,7 @@ class Api
      */
     protected function request(string $method, array $params = [])
     {
-        $response = $this->client->post('/', [
+        $response = $this->client->post($this->path, [
             'json' => [
                 'method' => strtolower($method),
                 'params' => $params,

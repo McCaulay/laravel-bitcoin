@@ -4,6 +4,18 @@ namespace McCaulay\Bitcoin\Api;
 class WalletApi extends Api
 {
     /**
+     * Initialise a bitcoin wallet.
+     *
+     * @param $name The bitcoin wallet name.
+     */
+    public function __constructor(string $name = null)
+    {
+        if ($name != null) {
+            $this->setPath('/wallet/' . $name);
+        }
+    }
+
+    /**
      * Marks an in-wallet transaction and all its in-wallet descendants as abandoned.
      * This allows their inputs to be respent.
      *

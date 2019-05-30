@@ -1,15 +1,19 @@
 <?php
 namespace McCaulay\Bitcoin;
 
+use McCaulay\Bitcoin\Wallet;
+
 class Bitcoin
 {
     /**
-     * Get
+     * Gets a bitcoin wallet.
      *
-     * @return Wallet
+     * @param $wallet The bitcoin wallet name. A null wallet uses the default
+     * bitcoin wallet.
+     * @return \McCaulay\Bitcoin\Wallet
      */
-    public static function getWallet()
+    public static function getWallet(string $wallet = null)
     {
-        return null;
+        return new Wallet($wallet);
     }
 }
