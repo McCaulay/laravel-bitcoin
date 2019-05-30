@@ -138,9 +138,9 @@ class WalletApi extends Api
      * @param string $accountName The name of an account to get the balance for.
      * An empty string (“”) is the default account. The string * will get the
      * balance for all accounts (this is the default behavior)
-     * @return double
+     * @return string
      */
-    public function getBalance(string $accountName = null): double
+    public function getBalance(string $accountName = null): string
     {
         return $this->request('getBalance', $accountName == null ? [] : [$accountName]);
     }
@@ -188,9 +188,9 @@ class WalletApi extends Api
      *
      * @see https://bitcoin.org/en/developer-reference#getreceivedbyaddress
      * @param $address The address whose transactions should be tallied.
-     * @return double
+     * @return string
      */
-    public function getReceivedByAddress(string $address): double
+    public function getReceivedByAddress(string $address): string
     {
         return $this->request('getReceivedByAddress', [$address]);
     }
@@ -212,9 +212,9 @@ class WalletApi extends Api
      * Gets the wallet’s total unconfirmed balance.
      *
      * @see https://bitcoin.org/en/developer-reference#getunconfirmedbalance
-     * @return double
+     * @return string
      */
-    public function getUnconfirmedBalance(): double
+    public function getUnconfirmedBalance(): string
     {
         return $this->request('getUnconfirmedBalance');
     }
@@ -277,32 +277,386 @@ class WalletApi extends Api
         if ($options != null) {
             $parameters[] = $options;
         }
-        $this->request('importMulti', $parameters);
+        return $this->request('importMulti', $parameters);
     }
 
-    // importprivkey "privkey" ( "label" ) ( rescan )
-    // importprunedfunds
-    // importpubkey "pubkey" ( "label" rescan )
-    // importwallet "filename"
-    // keypoolrefill ( newsize )
-    // listaccounts ( minconf include_watchonly)
-    // listaddressgroupings
-    // listlockunspent
-    // listreceivedbylabel ( minconf include_empty include_watchonly)
-    // listreceivedbyaddress ( minconf include_empty include_watchonly address_filter )
-    // listsinceblock ( "blockhash" target_confirmations include_watchonly include_removed )
-    // listtransactions ( "account" count skip include_watchonly)
-    // listunspent ( minconf maxconf  ["addresses",...] [include_unsafe] [query_options])
-    // listwallets
-    // lockunspent unlock ([{"txid":"txid","vout":n},...])
-    // move "fromaccount" "toaccount" amount ( minconf "comment" )
-    // removeprunedfunds "txid"
-    // rescanblockchain ("start_height") ("stop_height")
-    // sendfrom "fromaccount" "toaddress" amount ( minconf "comment" "comment_to" )
-    // sendmany "fromaccount" {"address":amount,...} ( minconf "comment" ["address",...] )
-    // sendtoaddress "address" amount ( "comment" "comment_to" subtractfeefromamount )
-    // setlabel "address" "label"
-    // settxfee amount
-    // signmessage "address" "message"
-    // signrawtransactionwithwallet "hexstring" ( [{"txid":"id","vout":n,"scriptPubKey":"hex","redeemScript":"hex"},...] sighashtype )
+    /**
+     * Adds a private key to your wallet. The key should be formatted in the
+     * wallet import format created by the dumpprivkey RPC.
+     *
+     * @see https://bitcoin.org/en/developer-reference#importprivkey
+     * @param $privateKey The private key to import into the wallet encoded in
+     * base58check using wallet import format (WIF).
+     * @param $account The name of an account to which transactions involving
+     * the key should be assigned. The default is the default account, an empty
+     * string (“”).
+     * @param $rescan Set to true (the default) to rescan the entire local block
+     * database for transactions affecting any address or pubkey script in the
+     * wallet (including transaction affecting the newly-added address for this
+     * private key). Set to false to not rescan the block database (rescanning
+     * can be performed at any time by restarting Bitcoin Core with the -rescan
+     * command-line argument). Rescanning may take several minutes. Notes: if the
+     * address for this key is already in the wallet, the block database will not
+     * be rescanned even if this parameter is set.
+     * @return void
+     */
+    public function importPrivKey(string $privateKey, string $account = null, bool $rescan = null): void
+    {
+        $parameters = [$privateKey];
+        if ($account != null) {
+            $parameters[] = $account;
+        }
+        if ($rescan != null) {
+            $parameters[] = $rescan;
+        }
+        $this->request('importPrivKey', $parameters);
+    }
+
+    /**
+     * Imports funds without the need of a rescan. Meant for use with pruned
+     * wallets. Corresponding address or script must previously be included in
+     * wallet. The end-user is responsible to import additional transactions that
+     * subsequently spend the imported outputs or rescan after the point in the
+     * blockchain the transaction is included.
+     *
+     * @see https://bitcoin.org/en/developer-reference#importprunedfunds
+     * @param $privateKey A raw transaction in hex funding an already-existing
+     * address in wallet.
+     * @param $account The hex output from gettxoutproof that contains the transaction.
+     * @return void
+     */
+    public function importPrunedFunds(string $rawTransaction, string $txOutProof): void
+    {
+        $this->request('importPrunedFunds', [$rawTransaction, $txOutProof]);
+    }
+
+    /**
+     * Imports private keys from a file in wallet dump file format (see the
+     * dumpwallet RPC). These keys will be added to the keys currently in the wallet.
+     * This call may need to rescan all or parts of the block chain for transactions
+     * affecting the newly-added keys, which may take several minutes.
+     *
+     * @see https://bitcoin.org/en/developer-reference#importwallet
+     * @param $file The file to import. The path is relative to Bitcoin Core’s
+     * working directory
+     * @return void
+     */
+    public function importWallet(string $file): void
+    {
+        $this->request('importWallet', [$file]);
+    }
+
+    /**
+     * Fills the cache of unused pre-generated keys (the keypool).
+     *
+     * @see https://bitcoin.org/en/developer-reference#keypoolrefill
+     * @param $size The new size of the keypool; if the number of keys in the
+     * keypool is less than this number, new keys will be generated. Default is
+     * 100. The value 0 also equals the default. The value specified is for this
+     * call only—the default keypool size is not changed.
+     * @return void
+     */
+    public function keyPoolRefill(int $size = null): void
+    {
+        $this->request('keyPoolRefill', $size == null ? [] : [$size]);
+    }
+
+    /**
+     * Lists groups of addresses that may have had their common ownership made
+     * public by common use as inputs in the same transaction or from being used
+     * as change from a previous transaction.
+     *
+     * @see https://bitcoin.org/en/developer-reference#listaddressgroupings
+     * @return array
+     */
+    public function listAddressGroupings(): array
+    {
+        return $this->request('listAddressGroupings');
+    }
+
+    /**
+     * Gets a list of temporarily unspendable (locked) outputs.
+     *
+     * @see https://bitcoin.org/en/developer-reference#listlockunspent
+     * @return array
+     */
+    public function listLockUnspent(): array
+    {
+        return $this->request('listLockUnspent');
+    }
+
+    /**
+     * Lists the total number of bitcoins received by each address.
+     *
+     * @see https://bitcoin.org/en/developer-reference#listreceivedbyaddress
+     * @param $confirmations The minimum number of confirmations an
+     * externally-generated transaction must have before it is counted towards
+     * the balance. Transactions generated by this node are counted immediately.
+     * Typically, externally-generated transactions are payments to this wallet
+     * and transactions generated by this node are payments to other wallets.
+     * Use 0 to count unconfirmed transactions. Default is 1
+     * @param $includeEmpty Set to true to display accounts which have never
+     * received a payment. Set to false (the default) to only include accounts
+     * which have received a payment. Any account which has received a payment
+     * will be displayed even if its current balance is 0.
+     * @param $watchOnly If set to true, include watch-only addresses in details
+     * and calculations as if they were regular addresses belonging to the wallet.
+     * If set to false (the default), treat watch-only addresses as if they didn’t
+     * belong to this wallet.
+     * @return array
+     */
+    public function listReceivedByAddress(int $confirmations = null, bool $includeEmpty = null, bool $watchOnly = null): array
+    {
+        $parameters = [];
+        if ($confirmations != null) {
+            $parameters[] = $confirmations;
+        }
+        if ($includeEmpty != null) {
+            $parameters[] = $includeEmpty;
+        }
+        if ($watchOnly != null) {
+            $parameters[] = $watchOnly;
+        }
+        return $this->request('listReceivedByAddress', $parameters);
+    }
+
+    /**
+     * Gets all transactions affecting the wallet which have occurred since a
+     * particular block, plus the header hash of a block at a particular depth.
+     *
+     * @see https://bitcoin.org/en/developer-reference#listsinceblock
+     * @param $hash The hash of a block header encoded as hex in RPC byte order.
+     * All transactions affecting the wallet which are not in that block or any
+     * earlier block will be returned, including unconfirmed transactions. Default
+     * is the hash of the genesis block, so all transactions affecting the wallet
+     * are returned by default.
+     * @param $targetConfirmations Sets the lastblock field of the results to the
+     * header hash of a block with this many confirmations. This does not affect
+     * which transactions are returned. Default is 1, so the hash of the most
+     * recent block on the local best block chain is returned.
+     * @param $watchOnly If set to true, include watch-only addresses in details
+     * and calculations as if they were regular addresses belonging to the wallet.
+     * If set to false (the default), treat watch-only addresses as if they
+     * didn’t belong to this wallet.
+     * @return object|array
+     */
+    public function listSinceBlock(string $hash = null, int $targetConfirmations = null, bool $watchOnly = null)
+    {
+        $parameters = [];
+        if ($hash != null) {
+            $parameters[] = $hash;
+        }
+        if ($targetConfirmations != null) {
+            $parameters[] = $targetConfirmations;
+        }
+        if ($watchOnly != null) {
+            $parameters[] = $watchOnly;
+        }
+        return $this->request('listSinceBlock', $parameters);
+    }
+
+    /**
+     * Gets the most recent transactions that affect the wallet.
+     *
+     * @see https://bitcoin.org/en/developer-reference#listtransactions
+     * @param $account The name of an account to get transactinos from. Use an
+     * empty string (“”) to get transactions for the default account. Default is
+     * * to get transactions for all accounts.
+     * @param $count The number of the most recent transactions to list. Default
+     * is 10.
+     * @param $skip The number of the most recent transactions which should not
+     * be returned. Allows for pagination of results. Default is 0.
+     * @param $watchOnly If set to true, include watch-only addresses in details
+     * and calculations as if they were regular addresses belonging to the wallet.
+     * If set to false (the default), treat watch-only addresses as if they didn’t
+     * belong to this wallet.
+     * @return array
+     */
+    public function listTransactions(string $account = null, int $count = null, int $skip = null, bool $watchOnly = null): array
+    {
+        $parameters = [];
+        if ($account != null) {
+            $parameters[] = $account;
+        }
+        if ($count != null) {
+            $parameters[] = $count;
+        }
+        if ($skip != null) {
+            $parameters[] = $skip;
+        }
+        if ($watchOnly != null) {
+            $parameters[] = $watchOnly;
+        }
+        return $this->request('listTransactions', $parameters);
+    }
+
+    /**
+     * Gets  an array of unspent transaction outputs belonging to this wallet.
+     * Note: as of Bitcoin Core 0.10.0, outputs affecting watch-only addresses
+     * will be returned; see the spendable field in the results described below.
+     *
+     * @see https://bitcoin.org/en/developer-reference#listunspent
+     * @param $minConfirmations The minimum number of confirmations the
+     * transaction containing an output must have in order to be returned. Use 0
+     * to return outputs from unconfirmed transactions. Default is 1.
+     * @param $maxConfirmations The maximum number of confirmations the
+     * transaction containing an output may have in order to be returned. Default
+     * is 9999999 (~10 million).
+     * @param $addresses If present, only outputs which pay an address in this
+     * array will be returned.
+     * @return array
+     */
+    public function listUnspent(int $minConfirmations = null, int $maxConfirmations = null, array $addresses = null): array
+    {
+        $parameters = [];
+        if ($minConfirmations != null) {
+            $parameters[] = $minConfirmations;
+        }
+        if ($maxConfirmations != null) {
+            $parameters[] = $maxConfirmations;
+        }
+        if ($addresses != null) {
+            $parameters[] = $addresses;
+        }
+        return $this->request('listUnspent', $parameters);
+    }
+
+    /**
+     * Temporarily locks or unlocks specified transaction outputs. A locked
+     * transaction output will not be chosen by automatic coin selection when
+     * spending bitcoins. Locks are stored in memory only, so nodes start with
+     * zero locked outputs and the locked output list is always cleared when a
+     * node stops or fails.
+     *
+     * @see https://bitcoin.org/en/developer-reference#lockunspent
+     * @param $unlock Set to false to lock the outputs specified in the following
+     * parameter. Set to true to unlock the outputs specified. If this is the only
+     * argument specified and it is set to true, all outputs will be unlocked;
+     * if it is the only argument and is set to false, there will be no change.
+     * @param $outputs An array of outputs to lock or unlock.
+     * @return bool
+     */
+    public function lockUnspent(bool $unlock, array $outputs = null): bool
+    {
+        $parameters = [$unlock];
+        if ($outputs != null) {
+            $parameters[] = $outputs;
+        }
+        return $this->request('lockUnspent', $parameters);
+    }
+
+    /**
+     * Deletes the specified transaction from the wallet. Meant for use with
+     * pruned wallets and as a companion to importprunedfunds. This will effect
+     * wallet balances.
+     *
+     * @see https://bitcoin.org/en/developer-reference#removeprunedfunds
+     * @param $transactionId The hex-encoded id of the transaction you are removing.
+     * @return void
+     */
+    public function removePrunedFunds(string $transactionId): void
+    {
+        $this->request('removePrunedFunds', [$transactionId]);
+    }
+
+    /**
+     * Creates and broadcasts a transaction which sends outputs to multiple
+     * addresses.
+     *
+     * @see https://bitcoin.org/en/developer-reference#sendmany
+     * @param $fromAccount The name of the account from which the bitcoins should
+     * be spent. Use an empty string (“”) for the default account. Bitcoin Core
+     * will ensure the account has sufficient bitcoins to pay the total amount
+     * in the outputs field described below (but the transaction fee paid is not
+     * included in the calculation, so an account can spend a total of its balance
+     * plus the transaction fee).
+     * @param $outputs An object containing key/value pairs corresponding to the
+     * addresses and amounts to pay.
+     * @param $confirmations The minimum number of confirmations an incoming
+     * transaction must have for its outputs to be credited to this account’s
+     * balance. Outgoing transactions are always counted, as are move transactions
+     * made with the move RPC. If an account doesn’t have a balance high enough
+     * to pay for this transaction, the payment will be rejected. Use 0 to spend
+     * unconfirmed incoming payments. Default is 1.
+     * @param $comment A locally-stored (not broadcast) comment assigned to this
+     * transaction. Default is no comment.
+     * @param $address An array of addresses. The fee will be equally divided by
+     * as many addresses as are entries in this array and subtracted from each
+     * address. If this array is empty or not provided, the fee will be paid by
+     * the sender.
+     * @return string
+     */
+    public function sendMany(string $fromAccount, array $outputs, int $confirmations = null, string $comment = null, array $addresses = null): string
+    {
+        $parameters = [$fromAccount, $outputs];
+        if ($confirmations != null) {
+            $parameters[] = $confirmations;
+        }
+        if ($comment != null) {
+            $parameters[] = $comment;
+        }
+        if ($addresses != null) {
+            $parameters[] = $addresses;
+        }
+        return $this->request('sendMany', $parameters);
+    }
+
+    /**
+     * Spends an amount to a given address.
+     *
+     * @see https://bitcoin.org/en/developer-reference#sendtoaddress
+     * @param $address A P2PKH or P2SH address to which the bitcoins should be sent.
+     * @param $amount The amount to spent in bitcoins.
+     * @param $comment A locally-stored (not broadcast) comment assigned to this
+     * transaction. Default is no comment.
+     * @param $commentTo A locally-stored (not broadcast) comment assigned to
+     * this transaction. Meant to be used for describing who the payment was
+     * sent to. Default is no comment.
+     * @param $feeSubtraction The fee will be deducted from the amount being sent.
+     * The recipient will receive less bitcoins than you enter in the amount
+     * field. Default is false.
+     * @return string
+     */
+    public function sendToAddress(string $address, string $amount, string $comment = null, string $commentTo = null, bool $feeSubtraction = null): string
+    {
+        $parameters = [$address, $amount];
+        if ($comment != null) {
+            $parameters[] = $comment;
+        }
+        if ($commentTo != null) {
+            $parameters[] = $commentTo;
+        }
+        if ($feeSubtraction != null) {
+            $parameters[] = $feeSubtraction;
+        }
+        return $this->request('sendToAddress', $parameters);
+    }
+
+    /**
+     * Sets the transaction fee per kilobyte paid by transactions created by
+     * this wallet.
+     *
+     * @see https://bitcoin.org/en/developer-reference#settxfee
+     * @param $fee The transaction fee to pay, in bitcoins, for each kilobyte of
+     * transaction data. Be careful setting the fee too low—your transactions
+     * may not be relayed or included in blocks
+     * @return bool
+     */
+    public function setTxFee(string $fee): bool
+    {
+        return $this->request('setTxFee', [$fee]);
+    }
+
+    /**
+     * Signs a message with the private key of an address.
+     *
+     * @see https://bitcoin.org/en/developer-reference#signmessage
+     * @param $address A P2PKH address whose private key belongs to this wallet.
+     * @param $message The message to sign.
+     * @return string
+     */
+    public function signMessage(string $address, string $message): string
+    {
+        return $this->request('signMessage', [$address, $message]);
+    }
 }
